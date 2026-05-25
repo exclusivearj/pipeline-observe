@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+build/
+.eggs/
+# dist/ kept in repo so downstream projects can vendor the wheel
+# (build artifacts other than the wheel are still recreated by `make build`)
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+coverage.xml
+*.cover
+
+# Type checkers / linters
+.mypy_cache/
+.ruff_cache/
+.dmypy.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Airflow / Astronomer
+.astro/
+airflow.cfg
+airflow.db
+logs/
+plugins/__pycache__/
+dags/__pycache__/
+
+# Local data
+data/
+*.duckdb
+*.duckdb.wal
+*.parquet
+*.csv
+
+# Secrets
+.env
+.env.local
+*.pem

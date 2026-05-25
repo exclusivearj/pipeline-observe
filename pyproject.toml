@@ -1,0 +1,78 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pipeline-sentinel"
+version = "0.1.0"
+description = "Decorator-based data observability for Spark and Pandas pipelines"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Akshay Jain" },
+]
+keywords = ["data-quality", "observability", "pandas", "pyspark", "airflow", "etl"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "pandas>=1.5.0",
+]
+
+[project.optional-dependencies]
+spark = ["pyspark>=3.3.0"]
+gcp = ["google-cloud-bigquery>=3.0.0"]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov",
+    "pytest-mock",
+    "black",
+    "mypy",
+    "build",
+]
+
+[project.urls]
+Homepage = "https://github.com/akshay-jain-r/pipeline-sentinel"
+Repository = "https://github.com/akshay-jain-r/pipeline-sentinel"
+Issues = "https://github.com/akshay-jain-r/pipeline-sentinel/issues"
+
+[tool.setuptools.packages.find]
+include = ["sentinel*"]
+exclude = ["tests*", "examples*", "docs*", "airflow*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-ra"
+
+[tool.coverage.run]
+source = ["sentinel"]
+omit = ["tests/*", "examples/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = false
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true

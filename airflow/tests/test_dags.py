@@ -65,17 +65,15 @@ def test_regression_suite_has_one_task_per_check(dag_bag):
     check_tasks = [t for t in dag.tasks if t.task_id.startswith("test_") and t.task_id.endswith("_check")]
     assert len(check_tasks) == 8, [t.task_id for t in check_tasks]
 
-
 def test_weekly_digest_schedule(dag_bag):
     dag = dag_bag.get_dag("sentinel_weekly_digest")
-    assert dag.schedule_interval == "0 9 * * 1" or str(dag.timetable.summary) == "0 9 * * 1"
-
+    assert dag.schedule == "0 9 * * 1" or str(dag.timetable.summary) == "0 9 * * 1"
 
 def test_etl_dag_schedule(dag_bag):
     dag = dag_bag.get_dag("ratings_etl_with_sentinel")
-    assert dag.schedule_interval == "0 3 * * *" or str(dag.timetable.summary) == "0 3 * * *"
+    assert dag.schedule == "0 3 * * *" or str(dag.timetable.summary) == "0 3 * * *"
 
 
 def test_regression_dag_schedule(dag_bag):
     dag = dag_bag.get_dag("sentinel_regression_suite")
-    assert dag.schedule_interval == "0 0 * * *" or str(dag.timetable.summary) == "0 0 * * *"
+    assert dag.schedule == "0 0 * * *" or str(dag.timetable.summary) == "0 0 * * *"

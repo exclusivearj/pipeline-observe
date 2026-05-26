@@ -8,6 +8,12 @@
 
 Most data pipelines fail silently — bad rows make it downstream and analysts discover the problem days later. `pipeline-sentinel` puts a check in front of every transform, with clear pass/fail/warn signals and structured reports.
 
+## Role in the broader series
+
+This is the first of four projects I'm building as a reference architecture for production data engineering. The remaining projects in the series — a Flink + Iceberg streaming pipeline, a Netflix-style dbt lakehouse, and a streaming benchmark — will each adopt `pipeline-sentinel` as their data quality layer.
+
+Building the observability library first was deliberate. Every downstream project gets the same `@observe` decorator, the same `ObservabilityReport` schema, and the same DuckDB audit trail. That makes quality metrics comparable across batch (dbt), streaming (Flink), and benchmark workloads using one shared vocabulary — instead of each project reinventing checks in its own dialect. It also forced me to design the library with multiple consumers in mind from day one, rather than retrofitting it later.
+
 ## Install
 
 ```bash

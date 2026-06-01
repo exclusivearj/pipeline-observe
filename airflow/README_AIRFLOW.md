@@ -42,7 +42,7 @@ This directory is a complete Astronomer Airflow project that *consumes* the `pip
 
 | Path | Purpose |
 |---|---|
-| `Dockerfile` | Astro Runtime 3.1-5 (Airflow 3.1.x) + observe library installed editable |
+| `Dockerfile` | Astro Runtime 3.1-5 (Airflow 3.1.x) + observe library installed from baked-in source (`pip install /usr/local/airflow/observe_lib/`, non-editable) |
 | `requirements.txt` | Airflow providers: slack, duckdb, pandas, pyarrow |
 | `docker-compose.yml` | Postgres + scheduler + webserver + triggerer + airflow-init |
 | `dags/ratings_etl_pipeline.py` | Showcase ETL DAG (3am) |
@@ -106,3 +106,7 @@ If you see these symptoms, the cause is one of the three env vars above:
 | Logs show `Please make sure that all your Airflow components ... have the same 'secret_key' configured`; UI cannot fetch task logs or cross-component requests fail. | `API__SECRET_KEY` not set (each container generated a different secret). |
 
 After changing any of these vars, run `docker compose up -d` to recreate the containers, then clear the previously-failed task instances so they re-queue.
+
+## Installing the `observe` library
+
+The `Dockerfile` COPYs the `observe/` source (plus `pyproject.toml` and `README.md`) into `/usr/local/airflow/observe_lib/` and installs it with a **non-editable** `pip install /usr/local/airflow/observe_lib/`. The source is baked into the image at build time — `observe_lib/` is not a volume mount — so editable mode (`pip install -e`) buys nothing and its PEP 660 finder did not resolve `observe` at runtime under Astro Runtime, producing `ModuleNotFoundError: No module named 'observe'` during DAG parsing. The non-editable install matches the wheel-based install used by the sibling projects (2/3/4). After editing anything under `observe/`, rebuild the image (`docker compose build` / `astro dev restart`) to pick up the change.

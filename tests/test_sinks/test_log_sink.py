@@ -20,7 +20,7 @@ def test_log_sink_logs_header(sample_df_clean, caplog):
             message="ok",
         )
     )
-    with caplog.at_level(logging.INFO, logger="pipeline-sentinel"):
+    with caplog.at_level(logging.INFO, logger="pipeline-observe"):
         sink.write(report)
     assert any("p/t" in rec.message for rec in caplog.records)
 
@@ -39,7 +39,7 @@ def test_log_sink_logs_failures(caplog):
             column="user_id",
         )
     )
-    with caplog.at_level(logging.ERROR, logger="pipeline-sentinel"):
+    with caplog.at_level(logging.ERROR, logger="pipeline-observe"):
         sink.write(report)
     failure_logs = [rec for rec in caplog.records if "NullRateCheck" in rec.message]
     assert failure_logs

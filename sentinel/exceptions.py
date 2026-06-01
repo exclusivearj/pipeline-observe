@@ -1,4 +1,4 @@
-"""Custom exceptions for pipeline-sentinel."""
+"""Custom exceptions for pipeline-observe."""
 
 from __future__ import annotations
 

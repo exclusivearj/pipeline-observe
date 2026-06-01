@@ -45,7 +45,7 @@ class BigQuerySink(BaseSink):
         except ImportError:
             self._logger.warning(
                 "BigQuerySink: google-cloud-bigquery not installed; skipping write. "
-                "Install with `pip install pipeline-sentinel[gcp]`."
+                "Install with `pip install pipeline-observe[gcp]`."
             )
             return None
         if self.credentials_path:

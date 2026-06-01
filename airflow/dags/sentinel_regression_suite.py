@@ -64,7 +64,7 @@ def _assert(check, df, expected_status: CheckStatus, label: str) -> None:
     catchup=False,
     default_args={"retries": 0},
     tags=["project3", "sentinel", "testing"],
-    description="Nightly regression tests for pipeline-sentinel.",
+    description="Nightly regression tests for pipeline-observe.",
 )
 def sentinel_regression_suite():
     @task

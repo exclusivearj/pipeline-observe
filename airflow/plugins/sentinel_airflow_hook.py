@@ -1,4 +1,4 @@
-"""Bridge between Airflow Connections and pipeline-sentinel sinks."""
+"""Bridge between Airflow Connections and pipeline-observe sinks."""
 
 from __future__ import annotations
 

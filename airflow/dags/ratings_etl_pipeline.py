@@ -1,6 +1,6 @@
 """DAG: ratings_etl_with_sentinel — daily 3am full ETL using @observe.
 
-Primary showcase of pipeline-sentinel integrated into Airflow.
+Primary showcase of pipeline-observe integrated into Airflow.
 
 Each task is a PythonOperator-style @task that:
   1. resolves the standard set of sinks from SentinelAirflowHook
@@ -48,7 +48,7 @@ def _attach_sinks(fn):
     catchup=False,
     default_args={"retries": 1, "retry_delay": timedelta(minutes=5)},
     tags=["project3", "sentinel", "etl"],
-    description="Full ratings ETL pipeline using pipeline-sentinel @observe decorator.",
+    description="Full ratings ETL pipeline using pipeline-observe @observe decorator.",
 )
 def ratings_etl_with_sentinel():
     @task

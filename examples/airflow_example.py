@@ -1,4 +1,4 @@
-"""Example: pipeline-sentinel inside an Airflow DAG via PythonOperator.
+"""Example: pipeline-observe inside an Airflow DAG via PythonOperator.
 
 This module is illustrative — paste it into an Airflow project's `dags/`
 folder (or import the decorated functions). The library is non-invasive:

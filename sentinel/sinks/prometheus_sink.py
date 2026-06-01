@@ -25,7 +25,7 @@ class PrometheusSink(BaseSink):
     def __init__(
         self,
         pushgateway_url: str,
-        job_name: str = "pipeline_sentinel",
+        job_name: str = "pipeline_observe",
         timeout: float = 5.0,
     ) -> None:
         self.pushgateway_url = pushgateway_url.rstrip("/")

@@ -1,6 +1,6 @@
-# Airflow Orchestration Layer — pipeline-sentinel
+# Airflow Orchestration Layer — pipeline-observe
 
-This directory is a complete Astronomer Airflow project that *consumes* the `pipeline-sentinel` library. It serves two purposes simultaneously:
+This directory is a complete Astronomer Airflow project that *consumes* the `pipeline-observe` library. It serves two purposes simultaneously:
 
 1. **Showcase** — `ratings_etl_with_sentinel` is the canonical example of `@observe` integrated into a scheduled pipeline.
 2. **Regression suite** — `sentinel_regression_suite` runs every check type against fixture DataFrames each night, failing the DAG on unexpected results. The library tests itself in production.

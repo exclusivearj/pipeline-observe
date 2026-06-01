@@ -48,7 +48,7 @@ def test_observe_warns_by_default_on_failure(sample_df_with_nulls, caplog):
     def transform(df):
         return df
 
-    with caplog.at_level(logging.INFO, logger="pipeline-sentinel"):
+    with caplog.at_level(logging.INFO, logger="pipeline-observe"):
         result = transform(sample_df_with_nulls)
     assert isinstance(result, pd.DataFrame)
     assert sink.reports
@@ -80,7 +80,7 @@ def test_observe_default_sink_is_log_sink(sample_df_clean, caplog):
     def transform(df):
         return df
 
-    with caplog.at_level(logging.INFO, logger="pipeline-sentinel"):
+    with caplog.at_level(logging.INFO, logger="pipeline-observe"):
         transform(sample_df_clean)
     assert any("p/t" in rec.message for rec in caplog.records)
 

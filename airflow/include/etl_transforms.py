@@ -1,7 +1,7 @@
 """ETL transform functions, each decorated with @observe.
 
 These are the actual callables used as Airflow PythonOperator targets.
-This file is the primary showcase of pipeline-sentinel in real usage.
+This file is the primary showcase of pipeline-observe in real usage.
 
 Note: the @observe decorator's `sinks` argument is set at *function definition*
 time, before Airflow runs. That's fine here because we resolve sinks lazily

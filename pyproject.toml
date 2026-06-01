@@ -3,14 +3,14 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pipeline-sentinel"
+name = "pipeline-observe"
 version = "0.1.0"
 description = "Decorator-based data observability for Spark and Pandas pipelines"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [
-    { name = "Akshay Jain" },
+    { name = "Akshay Jain", email = "exclusivearj@gmail.com" },
 ]
 keywords = ["data-quality", "observability", "pandas", "pyspark", "airflow", "etl"]
 classifiers = [
@@ -42,9 +42,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/akshay-jain-r/pipeline-sentinel"
-Repository = "https://github.com/akshay-jain-r/pipeline-sentinel"
-Issues = "https://github.com/akshay-jain-r/pipeline-sentinel/issues"
+Homepage = "https://github.com/exclusivearj/pipeline-observe"
+Repository = "https://github.com/exclusivearj/pipeline-observe"
+Issues = "https://github.com/exclusivearj/pipeline-observe/issues"
 
 [tool.setuptools.packages.find]
 include = ["sentinel*"]

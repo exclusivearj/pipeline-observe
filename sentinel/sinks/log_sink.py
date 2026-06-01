@@ -9,7 +9,7 @@ from sentinel.sinks.base import BaseSink
 
 
 class LogSink(BaseSink):
-    def __init__(self, level: str = "INFO", logger_name: str = "pipeline-sentinel") -> None:
+    def __init__(self, level: str = "INFO", logger_name: str = "pipeline-observe") -> None:
         self.level = logging.getLevelName(level.upper())
         self.logger = logging.getLogger(logger_name)
 

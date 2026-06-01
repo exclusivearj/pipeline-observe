@@ -1,20 +1,31 @@
-# pipeline-sentinel
+# pipeline-observe
 
 > Decorator-based data observability for pandas and PySpark pipelines.
 
-`pipeline-sentinel` adds production-grade data quality checks around your existing transform functions with a single decorator. It supports both pandas and PySpark DataFrames via duck-typing, ships pluggable alert sinks (log, Slack, BigQuery, Prometheus), and includes an Airflow regression suite that tests the library on real fixtures every night.
+`pipeline-observe` adds production-grade data quality checks around your existing transform functions with a single decorator. It supports both pandas and PySpark DataFrames via duck-typing, ships pluggable alert sinks (log, Slack, BigQuery, Prometheus), and includes an Airflow regression suite that tests the library on real fixtures every night.
 
 ## Why
 
-Most data pipelines fail silently — bad rows make it downstream and analysts discover the problem days later. `pipeline-sentinel` puts a check in front of every transform, with clear pass/fail/warn signals and structured reports.
+Most data pipelines fail silently — bad rows make it downstream and analysts discover the problem days later. `pipeline-observe` puts a check in front of every transform, with clear pass/fail/warn signals and structured reports.
 
 ## Role in the broader series
 
-This is the first of four projects I'm building as a reference architecture for production data engineering. The remaining projects in the series — a Flink + Iceberg streaming pipeline, a Netflix-style dbt lakehouse, and a streaming benchmark — will each adopt `pipeline-sentinel` as their data quality layer.
+This is the first of four projects I'm building as a reference architecture for production data engineering. The remaining projects in the series — a Flink + Iceberg streaming pipeline, a Netflix-style dbt lakehouse, and a streaming benchmark — will each adopt `pipeline-observe` as their data quality layer.
 
 Building the observability library first was deliberate. Every downstream project gets the same `@observe` decorator, the same `ObservabilityReport` schema, and the same DuckDB audit trail. That makes quality metrics comparable across batch (dbt), streaming (Flink), and benchmark workloads using one shared vocabulary — instead of each project reinventing checks in its own dialect. It also forced me to design the library with multiple consumers in mind from day one, rather than retrofitting it later.
 
 ## Install
+
+Published to PyPI as **`pipeline-observe`**. The import path is `sentinel` — you `from sentinel import observe`.
+
+```bash
+pip install pipeline-observe                # core (pandas only)
+pip install "pipeline-observe[spark]"       # + PySpark support
+pip install "pipeline-observe[gcp]"         # + BigQuery sink
+pip install "pipeline-observe[airflow]"     # + DuckDB audit sink
+```
+
+For local development against a clone:
 
 ```bash
 pip install -e .              # core (pandas only)
@@ -93,7 +104,7 @@ Custom sinks: subclass `BaseSink` and implement `write(report)`.
 ## Layout
 
 ```
-pipeline-sentinel/
+pipeline-observe/
 ├── sentinel/
 │   ├── core.py             ← @observe decorator
 │   ├── report.py           ← ObservabilityReport, CheckResult, CheckStatus
@@ -116,6 +127,28 @@ make format    # black format
 make build     # produce a wheel in dist/
 make example   # run examples/pandas_example.py
 ```
+
+## Publishing to PyPI
+
+The package is distributed as `pipeline-observe`. To cut a release:
+
+```bash
+pip install build twine
+rm -rf dist/*                       # never re-upload a built version
+python -m build                     # sdist + wheel into dist/
+python -m twine check dist/*        # validate metadata/README rendering
+
+# dry run on TestPyPI (optional)
+python -m twine upload --repository testpypi dist/*
+
+# real upload (PyPI versions are immutable — bump version first)
+python -m twine upload dist/*
+```
+
+Authenticate with a PyPI API token: set `TWINE_USERNAME=__token__` and
+`TWINE_PASSWORD=pypi-...`, or add a `[pypi]` entry to `~/.pypirc`. Bump
+`version` in both [pyproject.toml](pyproject.toml) and
+[sentinel/\_\_init\_\_.py](sentinel/__init__.py) before each release.
 
 ## Airflow integration
 

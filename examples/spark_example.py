@@ -1,7 +1,7 @@
 """Example: applying @observe to a PySpark transform.
 
 Run with: `python examples/spark_example.py`
-Requires: `pip install pipeline-sentinel[spark]`
+Requires: `pip install pipeline-observe[spark]`
 """
 
 from __future__ import annotations
@@ -24,7 +24,7 @@ def main() -> None:
         from pyspark.sql import SparkSession  # type: ignore
     except ImportError:
         print(
-            "PySpark not installed. Run: pip install 'pipeline-sentinel[spark]'"
+            "PySpark not installed. Run: pip install 'pipeline-observe[spark]'"
         )
         return
 

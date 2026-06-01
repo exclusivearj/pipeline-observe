@@ -1,4 +1,4 @@
-"""pipeline-sentinel: decorator-based data observability for pandas and PySpark."""
+"""pipeline-observe: decorator-based data observability for pandas and PySpark."""
 
 from sentinel.core import observe
 from sentinel.exceptions import CheckConfigurationError, DataQualityError, SinkError

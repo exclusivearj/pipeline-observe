@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import logging
 
-from sentinel.report import CheckStatus, ObservabilityReport
-from sentinel.sinks.base import BaseSink
+from observe.report import CheckStatus, ObservabilityReport
+from observe.sinks.base import BaseSink
 
 
 class LogSink(BaseSink):
@@ -16,7 +16,7 @@ class LogSink(BaseSink):
     def write(self, report: ObservabilityReport) -> None:
         status = report.overall_status
         header = (
-            f"[sentinel] {report.pipeline_name}/{report.table_name} | "
+            f"[observe] {report.pipeline_name}/{report.table_name} | "
             f"{status.value.upper()} | "
             f"{len(report.check_results)} checks | "
             f"{report.duration_ms:.1f}ms"

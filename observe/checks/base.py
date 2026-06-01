@@ -17,7 +17,7 @@ except Exception:  # pragma: no cover
     AnyDataFrame = pd.DataFrame  # type: ignore[misc,assignment]
     _HAS_SPARK = False
 
-from sentinel.report import CheckResult, CheckStatus
+from observe.report import CheckResult, CheckStatus
 
 
 class BaseCheck(ABC):

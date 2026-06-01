@@ -7,27 +7,27 @@ from typing import Optional
 
 from airflow.hooks.base import BaseHook
 
-from sentinel.sinks import LogSink, SlackSink
-from sentinel.sinks.base import BaseSink
+from observe.sinks import LogSink, SlackSink
+from observe.sinks.base import BaseSink
 
 from duckdb_metrics_sink import DuckDBMetricsSink
 
 
-class SentinelAirflowHook(BaseHook):
-    """Bridge between Airflow Connections and sentinel sinks.
+class ObserveAirflowHook(BaseHook):
+    """Bridge between Airflow Connections and observe sinks.
 
     Methods return configured sink instances so DAGs don't need to know
     where credentials live.
     """
 
-    conn_name_attr = "sentinel_conn_id"
-    default_conn_name = "sentinel_metrics_db"
-    conn_type = "sentinel"
-    hook_name = "Sentinel"
+    conn_name_attr = "observe_conn_id"
+    default_conn_name = "observe_metrics_db"
+    conn_type = "observe"
+    hook_name = "Observe"
 
-    def __init__(self, sentinel_conn_id: str = "sentinel_metrics_db") -> None:
+    def __init__(self, observe_conn_id: str = "observe_metrics_db") -> None:
         super().__init__()
-        self.sentinel_conn_id = sentinel_conn_id
+        self.observe_conn_id = observe_conn_id
 
     def get_slack_sink(
         self,
@@ -48,10 +48,10 @@ class SentinelAirflowHook(BaseHook):
     def get_duckdb_sink(
         self,
         db_path: Optional[str] = None,
-        table: str = "sentinel_reports",
+        table: str = "observe_reports",
     ) -> DuckDBMetricsSink:
         path = db_path or os.environ.get(
-            "SENTINEL_DUCKDB_PATH", "/usr/local/airflow/data/sentinel_reports.duckdb"
+            "OBSERVE_DUCKDB_PATH", "/usr/local/airflow/data/observe_reports.duckdb"
         )
         return DuckDBMetricsSink(db_path=path, table=table)
 

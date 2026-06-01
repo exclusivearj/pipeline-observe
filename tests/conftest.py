@@ -1,4 +1,4 @@
-"""Shared pytest fixtures for sentinel tests."""
+"""Shared pytest fixtures for observe tests."""
 
 from __future__ import annotations
 

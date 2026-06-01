@@ -4,8 +4,8 @@ import sys
 import types
 from unittest.mock import MagicMock
 
-from sentinel.report import CheckResult, CheckStatus, ObservabilityReport
-from sentinel.sinks import BigQuerySink
+from observe.report import CheckResult, CheckStatus, ObservabilityReport
+from observe.sinks import BigQuerySink
 
 
 def _make_report() -> ObservabilityReport:
@@ -66,10 +66,10 @@ def test_writes_one_row_per_check_result(monkeypatch):
     monkeypatch.setitem(sys.modules, "google.cloud", fake_cloud)
     monkeypatch.setitem(sys.modules, "google.cloud.bigquery", fake_bq)
 
-    sink = BigQuerySink(project="proj", dataset="ds", table="sentinel")
+    sink = BigQuerySink(project="proj", dataset="ds", table="observe")
     sink.write(_make_report())
 
-    assert captured["table_ref"] == "proj.ds.sentinel"
+    assert captured["table_ref"] == "proj.ds.observe"
     assert len(captured["rows"]) == 1
     row = captured["rows"][0]
     assert row["pipeline_name"] == "p"

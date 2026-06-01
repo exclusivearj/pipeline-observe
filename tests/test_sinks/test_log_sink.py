@@ -2,9 +2,9 @@
 
 import logging
 
-from sentinel.checks import NullRateCheck, RowCountCheck
-from sentinel.report import CheckResult, CheckStatus, ObservabilityReport
-from sentinel.sinks import LogSink
+from observe.checks import NullRateCheck, RowCountCheck
+from observe.report import CheckResult, CheckStatus, ObservabilityReport
+from observe.sinks import LogSink
 
 
 def test_log_sink_logs_header(sample_df_clean, caplog):

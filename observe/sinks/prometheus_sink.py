@@ -7,8 +7,8 @@ import re
 import urllib.error
 import urllib.request
 
-from sentinel.report import CheckStatus, ObservabilityReport
-from sentinel.sinks.base import BaseSink
+from observe.report import CheckStatus, ObservabilityReport
+from observe.sinks.base import BaseSink
 
 _LABEL_SAFE = re.compile(r'[\\"\n]')
 
@@ -38,24 +38,24 @@ class PrometheusSink(BaseSink):
         pipeline = _escape_label_value(report.pipeline_name)
         table = _escape_label_value(report.table_name)
 
-        lines.append("# TYPE sentinel_check_status gauge")
+        lines.append("# TYPE observe_check_status gauge")
         for result in report.check_results:
             status_val = 1 if result.status == CheckStatus.PASS else 0
             column = _escape_label_value(result.column or "")
             check = _escape_label_value(result.check_name)
             lines.append(
-                f'sentinel_check_status{{pipeline="{pipeline}",table="{table}",'
+                f'observe_check_status{{pipeline="{pipeline}",table="{table}",'
                 f'check="{check}",column="{column}"}} {status_val}'
             )
 
-        lines.append("# TYPE sentinel_row_count gauge")
+        lines.append("# TYPE observe_row_count gauge")
         lines.append(
-            f'sentinel_row_count{{pipeline="{pipeline}",table="{table}"}} {report.row_count}'
+            f'observe_row_count{{pipeline="{pipeline}",table="{table}"}} {report.row_count}'
         )
 
-        lines.append("# TYPE sentinel_pipeline_duration_ms gauge")
+        lines.append("# TYPE observe_pipeline_duration_ms gauge")
         lines.append(
-            f'sentinel_pipeline_duration_ms{{pipeline="{pipeline}",table="{table}"}} '
+            f'observe_pipeline_duration_ms{{pipeline="{pipeline}",table="{table}"}} '
             f"{report.duration_ms}"
         )
         return "\n".join(lines) + "\n"

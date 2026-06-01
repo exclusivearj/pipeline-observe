@@ -1,4 +1,4 @@
-"""DagBag integrity tests for the three sentinel DAGs."""
+"""DagBag integrity tests for the three observe DAGs."""
 
 from __future__ import annotations
 
@@ -34,9 +34,9 @@ def test_no_import_errors(dag_bag):
 
 def test_three_dags_loaded(dag_bag):
     expected = {
-        "ratings_etl_with_sentinel",
-        "sentinel_regression_suite",
-        "sentinel_weekly_digest",
+        "ratings_etl_with_observe",
+        "observe_regression_suite",
+        "observe_weekly_digest",
     }
     assert expected.issubset(set(dag_bag.dag_ids))
 
@@ -45,7 +45,7 @@ def test_all_dags_have_tags(dag_bag):
     for dag_id in dag_bag.dag_ids:
         dag = dag_bag.get_dag(dag_id)
         assert dag.tags, f"DAG {dag_id} has no tags"
-        assert "sentinel" in dag.tags
+        assert "observe" in dag.tags
 
 
 def test_etl_dag_uses_decorated_functions(dag_bag):
@@ -56,24 +56,24 @@ def test_etl_dag_uses_decorated_functions(dag_bag):
     )
 
     for fn in (ingest_raw_ratings, clean_and_enrich_ratings, aggregate_by_movie):
-        assert hasattr(fn, "__sentinel_checks__"), f"{fn.__name__} missing @observe"
+        assert hasattr(fn, "__observe_checks__"), f"{fn.__name__} missing @observe"
         assert hasattr(fn, "__wrapped__"), f"{fn.__name__} not wrapped by functools.wraps"
 
 
 def test_regression_suite_has_one_task_per_check(dag_bag):
-    dag = dag_bag.get_dag("sentinel_regression_suite")
+    dag = dag_bag.get_dag("observe_regression_suite")
     check_tasks = [t for t in dag.tasks if t.task_id.startswith("test_") and t.task_id.endswith("_check")]
     assert len(check_tasks) == 8, [t.task_id for t in check_tasks]
 
 def test_weekly_digest_schedule(dag_bag):
-    dag = dag_bag.get_dag("sentinel_weekly_digest")
+    dag = dag_bag.get_dag("observe_weekly_digest")
     assert dag.schedule == "0 9 * * 1" or str(dag.timetable.summary) == "0 9 * * 1"
 
 def test_etl_dag_schedule(dag_bag):
-    dag = dag_bag.get_dag("ratings_etl_with_sentinel")
+    dag = dag_bag.get_dag("ratings_etl_with_observe")
     assert dag.schedule == "0 3 * * *" or str(dag.timetable.summary) == "0 3 * * *"
 
 
 def test_regression_dag_schedule(dag_bag):
-    dag = dag_bag.get_dag("sentinel_regression_suite")
+    dag = dag_bag.get_dag("observe_regression_suite")
     assert dag.schedule == "0 0 * * *" or str(dag.timetable.summary) == "0 0 * * *"

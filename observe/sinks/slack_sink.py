@@ -8,8 +8,8 @@ import urllib.error
 import urllib.request
 from typing import Optional
 
-from sentinel.report import CheckStatus, ObservabilityReport
-from sentinel.sinks.base import BaseSink
+from observe.report import CheckStatus, ObservabilityReport
+from observe.sinks.base import BaseSink
 
 _STATUS_EMOJI = {
     CheckStatus.PASS: "✅",

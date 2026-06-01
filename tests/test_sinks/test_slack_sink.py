@@ -5,8 +5,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from sentinel.report import CheckResult, CheckStatus, ObservabilityReport
-from sentinel.sinks import SlackSink
+from observe.report import CheckResult, CheckStatus, ObservabilityReport
+from observe.sinks import SlackSink
 
 
 def _make_report(status: CheckStatus) -> ObservabilityReport:
@@ -32,7 +32,7 @@ def test_requires_webhook_url():
 def test_post_called_on_failure():
     sink = SlackSink(webhook_url="https://hooks.example.com/abc")
     report = _make_report(CheckStatus.FAIL)
-    with patch("sentinel.sinks.slack_sink.urllib.request.urlopen") as mock_urlopen:
+    with patch("observe.sinks.slack_sink.urllib.request.urlopen") as mock_urlopen:
         mock_urlopen.return_value.__enter__.return_value.read.return_value = b"ok"
         sink.write(report)
         mock_urlopen.assert_called_once()
@@ -46,7 +46,7 @@ def test_post_called_on_failure():
 def test_skip_when_only_on_failure_and_status_pass():
     sink = SlackSink(webhook_url="https://hooks.example.com/abc", only_on_failure=True)
     report = _make_report(CheckStatus.PASS)
-    with patch("sentinel.sinks.slack_sink.urllib.request.urlopen") as mock_urlopen:
+    with patch("observe.sinks.slack_sink.urllib.request.urlopen") as mock_urlopen:
         sink.write(report)
         mock_urlopen.assert_not_called()
 
@@ -57,7 +57,7 @@ def test_does_not_raise_on_http_error():
     sink = SlackSink(webhook_url="https://hooks.example.com/abc")
     report = _make_report(CheckStatus.FAIL)
     with patch(
-        "sentinel.sinks.slack_sink.urllib.request.urlopen",
+        "observe.sinks.slack_sink.urllib.request.urlopen",
         side_effect=urllib.error.HTTPError("u", 500, "boom", {}, None),
     ):
         sink.write(report)  # must not raise
@@ -69,7 +69,7 @@ def test_safe_write_does_not_raise_on_url_error():
     sink = SlackSink(webhook_url="https://hooks.example.com/abc")
     report = _make_report(CheckStatus.FAIL)
     with patch(
-        "sentinel.sinks.slack_sink.urllib.request.urlopen",
+        "observe.sinks.slack_sink.urllib.request.urlopen",
         side_effect=urllib.error.URLError("connection refused"),
     ):
         sink.write(report)
@@ -81,7 +81,7 @@ def test_channel_override_included():
         channel="#data-quality",
     )
     report = _make_report(CheckStatus.FAIL)
-    with patch("sentinel.sinks.slack_sink.urllib.request.urlopen") as mock_urlopen:
+    with patch("observe.sinks.slack_sink.urllib.request.urlopen") as mock_urlopen:
         mock_urlopen.return_value.__enter__.return_value.read.return_value = b"ok"
         sink.write(report)
         body = json.loads(mock_urlopen.call_args.args[0].data)

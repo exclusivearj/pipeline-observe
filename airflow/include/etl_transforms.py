@@ -5,7 +5,7 @@ This file is the primary showcase of pipeline-observe in real usage.
 
 Note: the @observe decorator's `sinks` argument is set at *function definition*
 time, before Airflow runs. That's fine here because we resolve sinks lazily
-via `SentinelAirflowHook` inside the DAG task wrappers — see
+via `ObserveAirflowHook` inside the DAG task wrappers — see
 `dags/ratings_etl_pipeline.py` for the pattern.
 """
 
@@ -13,8 +13,8 @@ from __future__ import annotations
 
 import pandas as pd
 
-from sentinel import observe
-from sentinel.checks import (
+from observe import observe
+from observe.checks import (
     DistributionCheck,
     FreshnessCheck,
     NullRateCheck,
@@ -23,7 +23,7 @@ from sentinel.checks import (
     SchemaCheck,
     UniquenessCheck,
 )
-from sentinel.sinks import LogSink
+from observe.sinks import LogSink
 
 
 RAW_RATINGS_SCHEMA = {

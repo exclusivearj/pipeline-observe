@@ -2,9 +2,9 @@
 
 import pytest
 
-from sentinel.checks import SchemaCheck
-from sentinel.exceptions import CheckConfigurationError
-from sentinel.report import CheckStatus
+from observe.checks import SchemaCheck
+from observe.exceptions import CheckConfigurationError
+from observe.report import CheckStatus
 
 EXPECTED = {
     "user_id": "object",

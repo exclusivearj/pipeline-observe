@@ -1,4 +1,4 @@
-"""DAG: sentinel_regression_suite — daily midnight regression test.
+"""DAG: observe_regression_suite — daily midnight regression test.
 
 Runs every check type against a known-clean fixture (expect PASS) and a
 known-bad fixture (expect FAIL or SKIP per design). Any unexpected
@@ -27,7 +27,7 @@ from fixture_datasets import (  # noqa: E402
     make_small_df,
     make_stale_df,
 )
-from sentinel.checks import (  # noqa: E402
+from observe.checks import (  # noqa: E402
     AnomalyCheck,
     DistributionCheck,
     FreshnessCheck,
@@ -37,7 +37,7 @@ from sentinel.checks import (  # noqa: E402
     SchemaCheck,
     UniquenessCheck,
 )
-from sentinel.report import CheckStatus  # noqa: E402
+from observe.report import CheckStatus  # noqa: E402
 
 EXPECTED_SCHEMA = {
     "user_id": "object",
@@ -58,15 +58,15 @@ def _assert(check, df, expected_status: CheckStatus, label: str) -> None:
 
 
 @dag(
-    dag_id="sentinel_regression_suite",
+    dag_id="observe_regression_suite",
     start_date=datetime(2024, 1, 1),
     schedule="0 0 * * *",
     catchup=False,
     default_args={"retries": 0},
-    tags=["project3", "sentinel", "testing"],
+    tags=["project3", "observe", "testing"],
     description="Nightly regression tests for pipeline-observe.",
 )
-def sentinel_regression_suite():
+def observe_regression_suite():
     @task
     def generate_test_fixtures() -> dict:
         # generate once to avoid drift between sibling tasks (timestamps).
@@ -176,8 +176,8 @@ def sentinel_regression_suite():
     def evaluate_regression_results(*results) -> None:
         failed = [r for r in results if not (isinstance(r, dict) and r.get("passed"))]
         if failed:
-            raise AirflowException(f"Sentinel regression failures: {failed}")
-        print(f"All {len(results)}/{len(results)} sentinel checks passed.")
+            raise AirflowException(f"Observe regression failures: {failed}")
+        print(f"All {len(results)}/{len(results)} observe checks passed.")
 
     fixtures = generate_test_fixtures()
     results = [
@@ -193,4 +193,4 @@ def sentinel_regression_suite():
     evaluate_regression_results(*results)
 
 
-dag = sentinel_regression_suite()
+dag = observe_regression_suite()

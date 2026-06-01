@@ -2,9 +2,9 @@
 
 import pytest
 
-from sentinel.checks import NullRateCheck
-from sentinel.exceptions import CheckConfigurationError
-from sentinel.report import CheckStatus
+from observe.checks import NullRateCheck
+from observe.exceptions import CheckConfigurationError
+from observe.report import CheckStatus
 
 
 def test_pass_zero_nulls(sample_df_clean):

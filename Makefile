@@ -9,15 +9,15 @@ install:
 	$(VENV)/bin/$(PIP) install -e ".[dev,spark,airflow]"
 
 test:
-	$(VENV)/bin/pytest tests/ -v --cov=sentinel --cov-report=term-missing
-	PYTHONPATH=airflow/plugins:airflow/include $(VENV)/bin/pytest airflow/tests/test_sentinel_airflow_hook.py -v
+	$(VENV)/bin/pytest tests/ -v --cov=observe --cov-report=term-missing
+	PYTHONPATH=airflow/plugins:airflow/include $(VENV)/bin/pytest airflow/tests/test_observe_airflow_hook.py -v
 
 lint:
-	$(VENV)/bin/black --check sentinel/ tests/
-	$(VENV)/bin/mypy sentinel/
+	$(VENV)/bin/black --check observe/ tests/
+	$(VENV)/bin/mypy observe/
 
 format:
-	$(VENV)/bin/black sentinel/ tests/
+	$(VENV)/bin/black observe/ tests/
 
 build:
 	$(VENV)/bin/$(PY) -m build
@@ -40,13 +40,13 @@ airflow-down:
 	cd airflow && docker compose down -v
 
 trigger-etl:
-	cd airflow && docker compose exec scheduler airflow dags trigger ratings_etl_with_sentinel
+	cd airflow && docker compose exec scheduler airflow dags trigger ratings_etl_with_observe
 
 trigger-regression:
-	cd airflow && docker compose exec scheduler airflow dags trigger sentinel_regression_suite
+	cd airflow && docker compose exec scheduler airflow dags trigger observe_regression_suite
 
 trigger-digest:
-	cd airflow && docker compose exec scheduler airflow dags trigger sentinel_weekly_digest
+	cd airflow && docker compose exec scheduler airflow dags trigger observe_weekly_digest
 
 airflow-test:
 	cd airflow && docker compose exec scheduler python -m pytest /usr/local/airflow/tests/ -v

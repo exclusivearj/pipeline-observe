@@ -5,16 +5,16 @@ import logging
 import pandas as pd
 import pytest
 
-from sentinel import (
+from observe import (
     DataQualityError,
     NullRateCheck,
     RowCountCheck,
     SchemaCheck,
     observe,
 )
-from sentinel.exceptions import CheckConfigurationError
-from sentinel.report import CheckStatus, ObservabilityReport
-from sentinel.sinks.base import BaseSink
+from observe.exceptions import CheckConfigurationError
+from observe.report import CheckStatus, ObservabilityReport
+from observe.sinks.base import BaseSink
 
 
 class _CaptureSink(BaseSink):
@@ -134,7 +134,7 @@ def test_observe_no_dataframe_returned_logs_warning(caplog):
 
 def test_overall_status_promotes_correctly():
     """ObservabilityReport.overall_status reflects worst result."""
-    from sentinel.report import CheckResult
+    from observe.report import CheckResult
 
     report = ObservabilityReport()
     report.check_results.append(

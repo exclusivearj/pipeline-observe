@@ -16,7 +16,7 @@ Building the observability library first was deliberate. Every downstream projec
 
 ## Install
 
-Published to PyPI as **`pipeline-observe`**. The import path is `sentinel` — you `from sentinel import observe`.
+Published to PyPI as **`pipeline-observe`**. The import path is `observe` — you `from observe import observe`.
 
 ```bash
 pip install pipeline-observe                # core (pandas only)
@@ -38,12 +38,12 @@ pip install -e ".[dev]"       # + test/lint tooling
 
 ```python
 import pandas as pd
-from sentinel import observe
-from sentinel.checks import (
+from observe import observe
+from observe.checks import (
     RowCountCheck, NullRateCheck, SchemaCheck, FreshnessCheck,
     DistributionCheck, UniquenessCheck, RangeCheck,
 )
-from sentinel.sinks import LogSink, SlackSink
+from observe.sinks import LogSink, SlackSink
 
 EXPECTED_SCHEMA = {
     "user_id": "object",
@@ -105,7 +105,7 @@ Custom sinks: subclass `BaseSink` and implement `write(report)`.
 
 ```
 pipeline-observe/
-├── sentinel/
+├── observe/
 │   ├── core.py             ← @observe decorator
 │   ├── report.py           ← ObservabilityReport, CheckResult, CheckStatus
 │   ├── exceptions.py
@@ -148,15 +148,15 @@ python -m twine upload dist/*
 Authenticate with a PyPI API token: set `TWINE_USERNAME=__token__` and
 `TWINE_PASSWORD=pypi-...`, or add a `[pypi]` entry to `~/.pypirc`. Bump
 `version` in both [pyproject.toml](pyproject.toml) and
-[sentinel/\_\_init\_\_.py](sentinel/__init__.py) before each release.
+[observe/\_\_init\_\_.py](observe/__init__.py) before each release.
 
 ## Airflow integration
 
 A complete Astronomer Airflow setup lives under [airflow/](airflow/). It exposes:
 
-- `ratings_etl_with_sentinel` — daily 3am ETL using `@observe`
-- `sentinel_regression_suite` — nightly self-test on every check type
-- `sentinel_weekly_digest` — Monday 9am Slack digest of accumulated reports
+- `ratings_etl_with_observe` — daily 3am ETL using `@observe`
+- `observe_regression_suite` — nightly self-test on every check type
+- `observe_weekly_digest` — Monday 9am Slack digest of accumulated reports
 
 See [airflow/README_AIRFLOW.md](airflow/README_AIRFLOW.md) for the orchestration architecture.
 

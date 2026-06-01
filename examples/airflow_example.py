@@ -19,8 +19,8 @@ import pandas as pd
 # These imports work in any environment with airflow installed.
 # They are deferred to runtime so this file remains importable without airflow.
 
-from sentinel import NullRateCheck, RowCountCheck, SchemaCheck, observe
-from sentinel.sinks import LogSink
+from observe import NullRateCheck, RowCountCheck, SchemaCheck, observe
+from observe.sinks import LogSink
 
 
 SCHEMA = {
@@ -57,13 +57,13 @@ def _build_dag():
 
     default_args = {"retries": 1, "retry_delay": timedelta(minutes=5)}
     with DAG(
-        dag_id="ratings_etl_with_sentinel",
+        dag_id="ratings_etl_with_observe",
         start_date=datetime(2024, 1, 1),
         schedule="0 3 * * *",
         catchup=False,
         default_args=default_args,
         params={"source_path": "/data/ratings.csv"},
-        tags=["sentinel", "etl"],
+        tags=["observe", "etl"],
     ) as dag:
         PythonOperator(
             task_id="transform_ratings",

@@ -2,8 +2,8 @@
 
 from unittest.mock import patch
 
-from sentinel.report import CheckResult, CheckStatus, ObservabilityReport
-from sentinel.sinks import PrometheusSink
+from observe.report import CheckResult, CheckStatus, ObservabilityReport
+from observe.sinks import PrometheusSink
 
 
 def _make_report() -> ObservabilityReport:
@@ -40,9 +40,9 @@ def _make_report() -> ObservabilityReport:
 def test_format_metrics_contains_all_three_metric_types():
     sink = PrometheusSink(pushgateway_url="http://pg:9091")
     body = sink._format_metrics(_make_report())
-    assert "sentinel_check_status" in body
-    assert "sentinel_row_count" in body
-    assert "sentinel_pipeline_duration_ms" in body
+    assert "observe_check_status" in body
+    assert "observe_row_count" in body
+    assert "observe_pipeline_duration_ms" in body
     assert 'pipeline="my_pipe"' in body
     assert 'table="my_table"' in body
 
@@ -50,14 +50,14 @@ def test_format_metrics_contains_all_three_metric_types():
 def test_check_status_value_is_zero_for_fail():
     sink = PrometheusSink(pushgateway_url="http://pg:9091")
     body = sink._format_metrics(_make_report())
-    lines = [ln for ln in body.splitlines() if ln.startswith("sentinel_check_status")]
+    lines = [ln for ln in body.splitlines() if ln.startswith("observe_check_status")]
     fail_line = next(ln for ln in lines if "NullRateCheck" in ln)
     assert fail_line.strip().endswith(" 0")
 
 
 def test_post_called_with_correct_url():
     sink = PrometheusSink(pushgateway_url="http://pg:9091", job_name="my_job")
-    with patch("sentinel.sinks.prometheus_sink.urllib.request.urlopen") as mock_urlopen:
+    with patch("observe.sinks.prometheus_sink.urllib.request.urlopen") as mock_urlopen:
         mock_urlopen.return_value.__enter__.return_value.read.return_value = b""
         sink.write(_make_report())
         req = mock_urlopen.call_args.args[0]
@@ -69,7 +69,7 @@ def test_does_not_raise_on_url_error():
 
     sink = PrometheusSink(pushgateway_url="http://pg:9091")
     with patch(
-        "sentinel.sinks.prometheus_sink.urllib.request.urlopen",
+        "observe.sinks.prometheus_sink.urllib.request.urlopen",
         side_effect=urllib.error.URLError("boom"),
     ):
         sink.write(_make_report())

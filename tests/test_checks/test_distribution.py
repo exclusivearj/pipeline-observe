@@ -2,9 +2,9 @@
 
 import pytest
 
-from sentinel.checks import DistributionCheck
-from sentinel.exceptions import CheckConfigurationError
-from sentinel.report import CheckStatus
+from observe.checks import DistributionCheck
+from observe.exceptions import CheckConfigurationError
+from observe.report import CheckStatus
 
 
 def test_pass_within_z_threshold(sample_df_clean):

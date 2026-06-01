@@ -1,12 +1,12 @@
-"""DAG: ratings_etl_with_sentinel — daily 3am full ETL using @observe.
+"""DAG: ratings_etl_with_observe — daily 3am full ETL using @observe.
 
 Primary showcase of pipeline-observe integrated into Airflow.
 
 Each task is a PythonOperator-style @task that:
-  1. resolves the standard set of sinks from SentinelAirflowHook
+  1. resolves the standard set of sinks from ObserveAirflowHook
   2. invokes the @observe-decorated transform from include.etl_transforms
   3. injects the sinks at call time by rebuilding the function's
-     `__sentinel_sinks__` attribute (so DAGs override defaults centrally)
+     `__observe_sinks__` attribute (so DAGs override defaults centrally)
 """
 
 from __future__ import annotations
@@ -28,29 +28,29 @@ from etl_transforms import (  # noqa: E402
     clean_and_enrich_ratings,
     ingest_raw_ratings,
 )
-from sentinel_airflow_hook import SentinelAirflowHook  # noqa: E402
+from observe_airflow_hook import ObserveAirflowHook  # noqa: E402
 
-DATA_DIR = Path(os.environ.get("SENTINEL_DATA_DIR", "/usr/local/airflow/data"))
+DATA_DIR = Path(os.environ.get("OBSERVE_DATA_DIR", "/usr/local/airflow/data"))
 RATINGS_CSV = DATA_DIR / "ratings_sample.csv"
 
 
 def _attach_sinks(fn):
     """Replace the function's sinks with the standard production set."""
-    hook = SentinelAirflowHook()
-    fn.__sentinel_sinks__ = hook.get_default_sinks(include_slack=True)
+    hook = ObserveAirflowHook()
+    fn.__observe_sinks__ = hook.get_default_sinks(include_slack=True)
     return fn
 
 
 @dag(
-    dag_id="ratings_etl_with_sentinel",
+    dag_id="ratings_etl_with_observe",
     start_date=datetime(2024, 1, 1),
     schedule="0 3 * * *",
     catchup=False,
     default_args={"retries": 1, "retry_delay": timedelta(minutes=5)},
-    tags=["project3", "sentinel", "etl"],
+    tags=["project3", "observe", "etl"],
     description="Full ratings ETL pipeline using pipeline-observe @observe decorator.",
 )
-def ratings_etl_with_sentinel():
+def ratings_etl_with_observe():
     @task
     def validate_data_files_exist() -> str:
         if not RATINGS_CSV.exists():
@@ -93,14 +93,14 @@ def ratings_etl_with_sentinel():
         return str(out)
 
     @task
-    def log_sentinel_report_summary() -> dict:
+    def log_observe_report_summary() -> dict:
         import duckdb
 
         db_path = os.environ.get(
-            "SENTINEL_DUCKDB_PATH", "/usr/local/airflow/data/sentinel_reports.duckdb"
+            "OBSERVE_DUCKDB_PATH", "/usr/local/airflow/data/observe_reports.duckdb"
         )
         if not os.path.exists(db_path):
-            print("No sentinel_reports.duckdb yet; first run.")
+            print("No observe_reports.duckdb yet; first run.")
             return {"checks_today": 0}
         conn = duckdb.connect(db_path)
         try:
@@ -111,7 +111,7 @@ def ratings_etl_with_sentinel():
                     SUM(CASE WHEN status = 'pass' THEN 1 ELSE 0 END) AS pass_n,
                     SUM(CASE WHEN status = 'fail' THEN 1 ELSE 0 END) AS fail_n,
                     SUM(CASE WHEN status = 'warn' THEN 1 ELSE 0 END) AS warn_n
-                FROM sentinel_reports
+                FROM observe_reports
                 WHERE evaluated_at >= now() - INTERVAL 1 DAY
                 """
             ).fetchone()
@@ -123,13 +123,13 @@ def ratings_etl_with_sentinel():
             "fail": row[2] or 0,
             "warn": row[3] or 0,
         }
-        print(f"Sentinel summary (last 24h): {summary}")
+        print(f"Observe summary (last 24h): {summary}")
         return summary
 
     @task
     def notify_pipeline_complete(summary: dict) -> None:
         msg = (
-            f":white_check_mark: ratings_etl_with_sentinel complete — "
+            f":white_check_mark: ratings_etl_with_observe complete — "
             f"{summary.get('pass', 0)} pass, {summary.get('fail', 0)} fail, "
             f"{summary.get('warn', 0)} warn"
         )
@@ -139,10 +139,10 @@ def ratings_etl_with_sentinel():
     raw = ingest(csv)
     cleaned = clean(raw)
     agg = aggregate(cleaned)
-    summary = log_sentinel_report_summary()
+    summary = log_observe_report_summary()
     cleaned >> summary  # ensure summary runs after cleaning even if agg fails
     agg >> summary
     notify_pipeline_complete(summary)
 
 
-dag = ratings_etl_with_sentinel()
+dag = ratings_etl_with_observe()

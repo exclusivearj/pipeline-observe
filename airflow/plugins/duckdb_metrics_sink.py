@@ -1,6 +1,6 @@
 """DuckDBMetricsSink — writes ObservabilityReport rows to a local DuckDB table.
 
-Lives outside sentinel_airflow_hook.py so it can be imported and tested
+Lives outside observe_airflow_hook.py so it can be imported and tested
 without Apache Airflow installed locally.
 """
 
@@ -9,8 +9,8 @@ from __future__ import annotations
 import json
 import os
 
-from sentinel.report import ObservabilityReport
-from sentinel.sinks.base import BaseSink
+from observe.report import ObservabilityReport
+from observe.sinks.base import BaseSink
 
 
 _TABLE_DDL = """
@@ -40,7 +40,7 @@ class DuckDBMetricsSink(BaseSink):
     Re-writes of the same report are idempotent (`INSERT OR IGNORE`).
     """
 
-    def __init__(self, db_path: str, table: str = "sentinel_reports") -> None:
+    def __init__(self, db_path: str, table: str = "observe_reports") -> None:
         self.db_path = db_path
         self.table = table
         os.makedirs(os.path.dirname(db_path) or ".", exist_ok=True)

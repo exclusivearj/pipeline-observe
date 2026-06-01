@@ -2,9 +2,9 @@
 
 import pytest
 
-from sentinel.checks import FreshnessCheck
-from sentinel.exceptions import CheckConfigurationError
-from sentinel.report import CheckStatus
+from observe.checks import FreshnessCheck
+from observe.exceptions import CheckConfigurationError
+from observe.report import CheckStatus
 
 
 def test_pass_recent_timestamp(sample_df_clean):

@@ -2,9 +2,9 @@
 
 import pytest
 
-from sentinel.checks import AnomalyCheck, RangeCheck, UniquenessCheck
-from sentinel.exceptions import CheckConfigurationError
-from sentinel.report import CheckStatus
+from observe.checks import AnomalyCheck, RangeCheck, UniquenessCheck
+from observe.exceptions import CheckConfigurationError
+from observe.report import CheckStatus
 
 # ----- UniquenessCheck -----
 

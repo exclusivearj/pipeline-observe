@@ -1,4 +1,4 @@
-"""Generate a synthetic MovieLens-shape CSV for the ratings_etl_with_sentinel DAG.
+"""Generate a synthetic MovieLens-shape CSV for the ratings_etl_with_observe DAG.
 
 Writes to airflow/data/ratings_sample.csv with columns matching what MovieLens
 exports use: userId, movieId, rating, timestamp (epoch seconds).

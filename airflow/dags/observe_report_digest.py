@@ -1,4 +1,4 @@
-"""DAG: sentinel_weekly_digest — Monday 9am quality digest.
+"""DAG: observe_weekly_digest — Monday 9am quality digest.
 
 Reads accumulated ObservabilityReports from DuckDB, computes 7-day
 trends, posts a Block Kit message to Slack.
@@ -13,24 +13,24 @@ from airflow.decorators import dag, task
 
 
 @dag(
-    dag_id="sentinel_weekly_digest",
+    dag_id="observe_weekly_digest",
     start_date=datetime(2024, 1, 1),
     schedule="0 9 * * 1",
     catchup=False,
     default_args={"retries": 1, "retry_delay": timedelta(minutes=5)},
-    tags=["project3", "sentinel", "reporting"],
-    description="Weekly data quality digest from DuckDB sentinel_reports.",
+    tags=["project3", "observe", "reporting"],
+    description="Weekly data quality digest from DuckDB observe_reports.",
 )
-def sentinel_weekly_digest():
+def observe_weekly_digest():
     @task
     def load_weekly_reports() -> dict:
         import duckdb
 
         db_path = os.environ.get(
-            "SENTINEL_DUCKDB_PATH", "/usr/local/airflow/data/sentinel_reports.duckdb"
+            "OBSERVE_DUCKDB_PATH", "/usr/local/airflow/data/observe_reports.duckdb"
         )
         if not os.path.exists(db_path):
-            return {"empty": True, "reason": "no sentinel_reports.duckdb yet"}
+            return {"empty": True, "reason": "no observe_reports.duckdb yet"}
         conn = duckdb.connect(db_path)
         try:
             totals = conn.execute(
@@ -39,14 +39,14 @@ def sentinel_weekly_digest():
                     COUNT(*) AS total_checks,
                     SUM(CASE WHEN status = 'pass' THEN 1 ELSE 0 END) AS passes,
                     SUM(CASE WHEN status = 'fail' THEN 1 ELSE 0 END) AS fails
-                FROM sentinel_reports
+                FROM observe_reports
                 WHERE evaluated_at >= now() - INTERVAL 7 DAY
                 """
             ).fetchone()
             top_failures = conn.execute(
                 """
                 SELECT check_name, column_name, COUNT(*) AS n
-                FROM sentinel_reports
+                FROM observe_reports
                 WHERE status = 'fail' AND evaluated_at >= now() - INTERVAL 7 DAY
                 GROUP BY check_name, column_name
                 ORDER BY n DESC
@@ -72,7 +72,7 @@ def sentinel_weekly_digest():
         import duckdb
 
         db_path = os.environ.get(
-            "SENTINEL_DUCKDB_PATH", "/usr/local/airflow/data/sentinel_reports.duckdb"
+            "OBSERVE_DUCKDB_PATH", "/usr/local/airflow/data/observe_reports.duckdb"
         )
         degrading = []
         if os.path.exists(db_path):
@@ -82,7 +82,7 @@ def sentinel_weekly_digest():
                     """
                     SELECT pipeline_name,
                            SUM(CASE WHEN status='pass' THEN 1 ELSE 0 END) * 1.0 / COUNT(*) AS pass_rate
-                    FROM sentinel_reports
+                    FROM observe_reports
                     WHERE evaluated_at >= now() - INTERVAL 3 DAY
                     GROUP BY pipeline_name
                     HAVING pass_rate < 0.8
@@ -96,7 +96,7 @@ def sentinel_weekly_digest():
     @task
     def post_digest_to_slack(payload: dict) -> str:
         if payload.get("empty"):
-            print("No sentinel reports to summarize; skipping digest.")
+            print("No observe reports to summarize; skipping digest.")
             return "skipped"
         date_str = datetime.utcnow().strftime("%Y-%m-%d")
         lines = [
@@ -124,4 +124,4 @@ def sentinel_weekly_digest():
     post_digest_to_slack(trends)
 
 
-dag = sentinel_weekly_digest()
+dag = observe_weekly_digest()

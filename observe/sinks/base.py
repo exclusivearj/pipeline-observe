@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from abc import ABC, abstractmethod
 
-from sentinel.report import ObservabilityReport
+from observe.report import ObservabilityReport
 
 
 class BaseSink(ABC):

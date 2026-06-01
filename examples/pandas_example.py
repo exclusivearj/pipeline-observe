@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 import numpy as np
 import pandas as pd
 
-from sentinel import (
+from observe import (
     DistributionCheck,
     FreshnessCheck,
     NullRateCheck,
@@ -19,7 +19,7 @@ from sentinel import (
     SchemaCheck,
     observe,
 )
-from sentinel.sinks import LogSink
+from observe.sinks import LogSink
 
 
 EXPECTED_SCHEMA = {
@@ -58,7 +58,7 @@ def make_input_df(n: int = 5_000) -> pd.DataFrame:
     on_failure="warn",
 )
 def transform_ratings(df: pd.DataFrame) -> pd.DataFrame:
-    """Identity transform that benefits from sentinel monitoring."""
+    """Identity transform that benefits from observe monitoring."""
     return df
 
 

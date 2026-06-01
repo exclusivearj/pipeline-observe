@@ -9,14 +9,14 @@ from __future__ import annotations
 import logging
 from datetime import datetime, timedelta
 
-from sentinel import (
+from observe import (
     NullRateCheck,
     RangeCheck,
     RowCountCheck,
     UniquenessCheck,
     observe,
 )
-from sentinel.sinks import LogSink
+from observe.sinks import LogSink
 
 
 def main() -> None:
@@ -29,7 +29,7 @@ def main() -> None:
         return
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
-    spark = SparkSession.builder.master("local[*]").appName("sentinel-spark-example").getOrCreate()
+    spark = SparkSession.builder.master("local[*]").appName("observe-spark-example").getOrCreate()
 
     now = datetime.utcnow().replace(microsecond=0)
     rows = [

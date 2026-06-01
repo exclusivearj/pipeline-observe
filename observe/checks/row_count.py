@@ -5,9 +5,9 @@ from __future__ import annotations
 import math
 from typing import Any
 
-from sentinel.checks.base import BaseCheck
-from sentinel.exceptions import CheckConfigurationError
-from sentinel.report import CheckResult, CheckStatus
+from observe.checks.base import BaseCheck
+from observe.exceptions import CheckConfigurationError
+from observe.report import CheckResult, CheckStatus
 
 
 class RowCountCheck(BaseCheck):

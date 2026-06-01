@@ -1,9 +1,9 @@
 """pipeline-observe: decorator-based data observability for pandas and PySpark."""
 
-from sentinel.core import observe
-from sentinel.exceptions import CheckConfigurationError, DataQualityError, SinkError
-from sentinel.report import CheckResult, CheckStatus, ObservabilityReport
-from sentinel.checks import (
+from observe.core import observe
+from observe.exceptions import CheckConfigurationError, DataQualityError, SinkError
+from observe.report import CheckResult, CheckStatus, ObservabilityReport
+from observe.checks import (
     AnomalyCheck,
     BaseCheck,
     DistributionCheck,
@@ -14,7 +14,7 @@ from sentinel.checks import (
     SchemaCheck,
     UniquenessCheck,
 )
-from sentinel.sinks import (
+from observe.sinks import (
     BaseSink,
     BigQuerySink,
     LogSink,

@@ -1,4 +1,4 @@
-"""Tests for SentinelAirflowHook and DuckDBMetricsSink."""
+"""Tests for ObserveAirflowHook and DuckDBMetricsSink."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ sys.path.insert(0, "/usr/local/airflow/plugins")
 sys.path.insert(0, "airflow/plugins")
 
 from duckdb_metrics_sink import DuckDBMetricsSink  # type: ignore
-from sentinel.report import CheckResult, CheckStatus, ObservabilityReport
+from observe.report import CheckResult, CheckStatus, ObservabilityReport
 
 
 def _make_report() -> ObservabilityReport:
@@ -54,7 +54,7 @@ def test_duckdb_sink_creates_table(tmp_path):
         tables = [r[0] for r in conn.execute("SHOW TABLES").fetchall()]
     finally:
         conn.close()
-    assert "sentinel_reports" in tables
+    assert "observe_reports" in tables
 
 
 def test_duckdb_sink_writes_report(tmp_path):
@@ -65,7 +65,7 @@ def test_duckdb_sink_writes_report(tmp_path):
 
     conn = duckdb.connect(str(db))
     try:
-        n = conn.execute("SELECT COUNT(*) FROM sentinel_reports").fetchone()[0]
+        n = conn.execute("SELECT COUNT(*) FROM observe_reports").fetchone()[0]
     finally:
         conn.close()
     assert n == 2  # one row per CheckResult
@@ -81,7 +81,7 @@ def test_duckdb_sink_is_idempotent(tmp_path):
 
     conn = duckdb.connect(str(db))
     try:
-        n = conn.execute("SELECT COUNT(*) FROM sentinel_reports").fetchone()[0]
+        n = conn.execute("SELECT COUNT(*) FROM observe_reports").fetchone()[0]
     finally:
         conn.close()
     assert n == 2

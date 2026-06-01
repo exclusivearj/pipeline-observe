@@ -9,11 +9,11 @@ from typing import Any, Callable, Iterable, Optional
 
 import pandas as pd
 
-from sentinel.checks.base import BaseCheck
-from sentinel.exceptions import CheckConfigurationError, DataQualityError
-from sentinel.report import CheckStatus, ObservabilityReport
-from sentinel.sinks.base import BaseSink
-from sentinel.sinks.log_sink import LogSink
+from observe.checks.base import BaseCheck
+from observe.exceptions import CheckConfigurationError, DataQualityError
+from observe.report import CheckStatus, ObservabilityReport
+from observe.sinks.base import BaseSink
+from observe.sinks.log_sink import LogSink
 
 _VALID_ON_FAILURE = {"warn", "raise"}
 _VALID_EVALUATE = {"input", "output", "both"}
@@ -150,8 +150,8 @@ def observe(
 
             return result
 
-        wrapper.__sentinel_checks__ = resolved_checks  # type: ignore[attr-defined]
-        wrapper.__sentinel_sinks__ = resolved_sinks  # type: ignore[attr-defined]
+        wrapper.__observe_checks__ = resolved_checks  # type: ignore[attr-defined]
+        wrapper.__observe_sinks__ = resolved_sinks  # type: ignore[attr-defined]
         return wrapper
 
     return decorator

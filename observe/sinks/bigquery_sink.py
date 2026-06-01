@@ -5,8 +5,8 @@ from __future__ import annotations
 import logging
 from typing import Optional
 
-from sentinel.report import ObservabilityReport
-from sentinel.sinks.base import BaseSink
+from observe.report import ObservabilityReport
+from observe.sinks.base import BaseSink
 
 
 def _coerce_metric(value: object) -> Optional[float]:
@@ -30,7 +30,7 @@ class BigQuerySink(BaseSink):
         self,
         project: str,
         dataset: str,
-        table: str = "sentinel_metrics",
+        table: str = "observe_metrics",
         credentials_path: Optional[str] = None,
     ) -> None:
         self.project = project

@@ -6,7 +6,7 @@ environment variables `AIRFLOW_CONN_*` for local docker compose).
 | Conn ID | Type | Used For | Required Fields |
 |---|---|---|---|
 | `slack_webhook` | HTTP | Slack alerts from SlackSink | `password` = webhook URL (e.g. `https://hooks.slack.com/services/...`) |
-| `sentinel_metrics_db` | Generic | DuckDB path for storing ObservabilityReports | `host` = absolute filesystem path to `.duckdb` file (default `/usr/local/airflow/data/sentinel_reports.duckdb`) |
+| `observe_metrics_db` | Generic | DuckDB path for storing ObservabilityReports | `host` = absolute filesystem path to `.duckdb` file (default `/usr/local/airflow/data/observe_reports.duckdb`) |
 
 The docker-compose.yml file in this directory wires sane defaults via
 `AIRFLOW_CONN_*` env vars; override them by editing that file or

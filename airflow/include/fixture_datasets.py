@@ -1,4 +1,4 @@
-"""Test DataFrames for the sentinel regression suite DAG.
+"""Test DataFrames for the observe regression suite DAG.
 
 Each fixture is paired with the expected check outcome.
 """
